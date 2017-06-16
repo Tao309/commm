@@ -1,0 +1,8 @@
+AuthType Basic
+                AuthName "Admins zone!"
+                AuthUserFile /home/c/cn16598/zlataooo/public_html/promo_code/promo_code/administrator/.htpasswd
+                Require valid-user
+                <Files .htpasswd>
+                   deny from all  #запрет доступа из браузера к .htpasswd
+                </Files>
+                

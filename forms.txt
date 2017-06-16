@@ -1,0 +1,67 @@
+<?php
+define( '_JEXEC', 1 );
+header('Content-type: text/plain; charset=utf8');
+if ($_POST) {
+	//VAR
+	$to  = "info@zlataooo.ru" ;
+	$subject = 'Новый лид ООО "ЗЛАТА"!';
+	//GEO
+	include("SxGeo.php");
+	$SxGeo = new SxGeo('SxGeoCity.dat');
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$city = $SxGeo->getCityFull($ip);
+	$city2 = $city['city']['name_ru'];
+	//Mobile detect
+	require_once 'Mobile_Detect.php';
+	$detect = new Mobile_Detect;
+	if ( $detect->isMobile() ) {
+		$detect1 = 'Смартфон';
+		if( $detect->isiOS() ){
+			$detect2 = 'iOS ';
+		}
+		if( $detect->isAndroidOS() ){
+			$detect2 = 'Android ';
+		}
+	}
+	if( $detect->isTablet() ){
+		$detect1 = 'Планшет';
+	}
+	if (!$detect1) {
+		$detect1 = "ПК/Ноутбук";
+	}
+	//Браузер
+	$user_agent = $_SERVER["HTTP_USER_AGENT"];
+	if (strpos($user_agent, "Firefox") !== false) $detect2 .= "Firefox";
+	elseif (strpos($user_agent, "Opera") !== false) $detect2 .= "Opera";
+	elseif (strpos($user_agent, "Chrome") !== false) $detect2 .= "Chrome";
+	elseif (strpos($user_agent, "MSIE") !== false) $detect2 .= "Internet Explorer";
+	elseif (strpos($user_agent, "Safari") !== false) $detect2 .= "Safari";
+	else $detect2 .= "Неизвестно";
+	//
+	$message = '
+	<html>
+		<head>
+			<title></title>
+		</head>
+    <body>';
+	//POST to message
+	foreach ($_POST as $key=>$val)
+		{
+			$message .= "<p>$key :  <strong>$val</strong></p>";
+		}
+	//referer url
+	$referer = urldecode($_SERVER[HTTP_REFERER]);
+	$get = parse_url($referer, PHP_URL_QUERY);
+	$get = explode('&', $get);
+	$utm = '';
+	foreach($get as $param)	{
+		$param = explode('=', $param);
+		if($param[0] === 'utm_content') {
+			$utm = $param[1];
+			break;
+		}
+	}
+	var_dump($utm);
+	//
+}
+?>
